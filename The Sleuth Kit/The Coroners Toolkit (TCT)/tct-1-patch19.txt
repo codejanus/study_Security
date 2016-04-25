@@ -1,0 +1,793 @@
+Only in .: 3867
+diff -cr /tmp/tct-1.18/CHANGES ./CHANGES
+*** /tmp/tct-1.18/CHANGES	Mon Apr  9 09:44:12 2007
+--- ./CHANGES	Sat Aug 29 19:07:31 2009
+***************
+*** 1,3 ****
+--- 1,19 ----
++ Sat Aug 29 2009
++ 
++ o	grave-robber did not record the initial directory in the body file.
++ 
++ o	Bit-rot: FreeBSD 7 support, including ``struct acct'' changes.
++ 
++ o	Bit-rot: lastcomm format strings.
++ 
++ Sun Jan 11 20:01:27 EST 2009
++ 
++ o	Bit-rot: OpenBSD 4.x support (still TODO: file system tools).
++ 
++ Thu Jun  7 10:54:44 EDT 2007
++ 
++ o	Bit-rot: FreeBSD 6.x support.
++ 
+  Mon Apr  9 09:36:31 EDT 2007
+  
+  o	Bit-rot: the 64-bit workaround for LINUX lseek() is no
+diff -cr /tmp/tct-1.18/extras/entropy/makedefs ./extras/entropy/makedefs
+*** /tmp/tct-1.18/extras/entropy/makedefs	Sat Aug 30 19:16:41 2003
+--- ./extras/entropy/makedefs	Sat Aug 29 17:37:39 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/extras/findkey/makedefs ./extras/findkey/makedefs
+*** /tmp/tct-1.18/extras/findkey/makedefs	Sat Aug 30 19:16:51 2003
+--- ./extras/findkey/makedefs	Sat Aug 29 17:38:02 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/lib/ostype.pl ./lib/ostype.pl
+*** /tmp/tct-1.18/lib/ostype.pl	Sat Aug 30 19:17:11 2003
+--- ./lib/ostype.pl	Sat Aug 29 16:19:58 2009
+***************
+*** 13,20 ****
+--- 13,23 ----
+      "FREEBSD3", "FreeBSD.3",
+      "FREEBSD4", "FreeBSD.4",
+      "FREEBSD5", "FreeBSD.5",
++     "FREEBSD6", "FreeBSD.6",
++     "FREEBSD7", "FreeBSD.7",
+      "OPENBSD2", "OpenBSD.2",
+      "OPENBSD3", "OpenBSD.3",
++     "OPENBSD4", "OpenBSD.4",
+      "BSDI2", "BSD\/OS.2",
+      "BSDI3", "BSD\/OS.3",
+      "BSDI4", "BSD\/OS.4",
+diff -cr /tmp/tct-1.18/lib/tree.pl ./lib/tree.pl
+*** /tmp/tct-1.18/lib/tree.pl	Thu Feb 22 11:19:40 2001
+--- ./lib/tree.pl	Sat Aug 29 16:07:21 2009
+***************
+*** 32,37 ****
+--- 32,39 ----
+  	return;
+  	}
+  
++ crunch($dir) if $flag;
++ 
+  #
+  # Suck in all the dir entries
+  @next = readdir(DIR);
+diff -cr /tmp/tct-1.18/man/man1/grave-robber.1 ./man/man1/grave-robber.1
+*** /tmp/tct-1.18/man/man1/grave-robber.1	Sat Mar 23 18:51:17 2002
+--- ./man/man1/grave-robber.1	Sun Jan 11 20:01:01 2009
+***************
+*** 90,95 ****
+--- 90,96 ----
+  \fB`FREEBSD3'\fR,
+  \fB`OPENBSD2'\fR,
+  \fB`OPENBSD3'\fR,
++ \fB`OPENBSD4'\fR,
+  \fB`BSDI2'\fR,
+  \fB`BSDI3'\fR,
+  \fB`SUNOS4'\fR,
+diff -cr /tmp/tct-1.18/src/aux/makedefs ./src/aux/makedefs
+*** /tmp/tct-1.18/src/aux/makedefs	Sat Aug 30 19:17:20 2003
+--- ./src/aux/makedefs	Sat Aug 29 17:45:02 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/src/file/file.c ./src/file/file.c
+*** /tmp/tct-1.18/src/file/file.c	Sun Jul 30 19:39:20 2000
+--- ./src/file/file.c	Sun Jan 11 20:21:16 2009
+***************
+*** 44,50 ****
+  #include <unistd.h>	/* for read() */
+  
+  #ifdef __ELF__
+! #include <elf.h>
+  #endif
+  
+  #include "patchlevel.h"
+--- 44,54 ----
+  #include <unistd.h>	/* for read() */
+  
+  #ifdef __ELF__
+! # ifdef USE_ELF_ABI_H
+! #  include <elf_abi.h>
+! # else
+! #  include <elf.h>
+! # endif
+  #endif
+  
+  #include "patchlevel.h"
+diff -cr /tmp/tct-1.18/src/file/makedefs ./src/file/makedefs
+*** /tmp/tct-1.18/src/file/makedefs	Sat Aug 30 20:02:52 2003
+--- ./src/file/makedefs	Sat Aug 29 17:45:29 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4 -DUSE_ELF_ABI_H"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/src/fstools/fs_tools.h ./src/fstools/fs_tools.h
+*** /tmp/tct-1.18/src/fstools/fs_tools.h	Mon Apr  9 09:30:32 2007
+--- ./src/fstools/fs_tools.h	Sat Aug 29 16:19:58 2009
+***************
+*** 115,121 ****
+  #define INO_TO_CG	ino_to_cg
+  #endif
+  
+! #if defined(FREEBSD5)
+  #define SUPPORTED
+  #include <sys/vnode.h>
+  #include <ufs/ufs/quota.h>
+--- 115,121 ----
+  #define INO_TO_CG	ino_to_cg
+  #endif
+  
+! #if defined(FREEBSD5) || defined(FREEBSD6) || defined(FREEBSD7)
+  #define SUPPORTED
+  #include <sys/vnode.h>
+  #include <ufs/ufs/quota.h>
+***************
+*** 175,183 ****
+  #endif
+  
+   /*
+!   * OpenBSD looks like BSD/OS 3.x.
+    */
+! #if defined(OPENBSD2) || defined(OPENBSD3)
+  #define SUPPORTED
+  #define HAVE_UFS_FFS
+  #include <sys/vnode.h>
+--- 175,183 ----
+  #endif
+  
+   /*
+!   * OpenBSD2 looks like BSD/OS 3.x.
+    */
+! #if defined(OPENBSD2) || defined(OPENBSD3) || defined(OPENBSD4)
+  #define SUPPORTED
+  #define HAVE_UFS_FFS
+  #include <sys/vnode.h>
+diff -cr /tmp/tct-1.18/src/fstools/makedefs ./src/fstools/makedefs
+*** /tmp/tct-1.18/src/fstools/makedefs	Mon Apr  9 09:32:52 2007
+--- ./src/fstools/makedefs	Sat Aug 29 17:45:49 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/src/lastcomm/lastcomm.c ./src/lastcomm/lastcomm.c
+*** /tmp/tct-1.18/src/lastcomm/lastcomm.c	Sat Aug 30 19:58:03 2003
+--- ./src/lastcomm/lastcomm.c	Sat Aug 29 19:01:14 2009
+***************
+*** 53,58 ****
+--- 53,59 ----
+  #include <sys/stat.h>
+  #include <sys/acct.h>
+  
++ #include <time.h>
+  #include <ctype.h>
+  #include <fcntl.h>
+  #include <stdio.h>
+***************
+*** 63,72 ****
+  #include <utmp.h>
+  /*#include "pathnames.h"*/
+  
+  time_t	 expand(u_int);
+  char	*flagbits(int);
+  char	*getdev(dev_t);
+! int	 requested(char *[], struct acct *);
+  void	 usage(void);
+  char	*user_from_uid();
+  
+--- 64,82 ----
+  #include <utmp.h>
+  /*#include "pathnames.h"*/
+  
++ #ifdef HAVE_ACCTV2
++ #define ACCT_STRUCT	acctv2
++ #define ACCT_FLAG	ac_flagx
++ #define expand(x)	(x)
++ #define AHZ		1000000
++ #else
++ #define ACCT_STRUCT	acct
++ #define ACCT_FLAG	ac_flag
+  time_t	 expand(u_int);
++ #endif
+  char	*flagbits(int);
+  char	*getdev(dev_t);
+! int	 requested(char *[], struct ACCT_STRUCT *);
+  void	 usage(void);
+  char	*user_from_uid();
+  
+***************
+*** 95,101 ****
+  	char *argv[];
+  {
+  	register char *p;
+! 	struct acct ab;
+  	struct stat sb;
+  	FILE *fp;
+  	off_t size;
+--- 105,111 ----
+  	char *argv[];
+  {
+  	register char *p;
+! 	struct ACCT_STRUCT ab;
+  	struct stat sb;
+  	FILE *fp;
+  	off_t size;
+***************
+*** 157,163 ****
+  	 * Round off to integral number of accounting records, probably
+  	 * not necessary, but it doesn't hurt.
+  	 */
+! 	size = sb.st_size - sb.st_size % sizeof(struct acct);
+  
+  	/* Print the optional time machine header. */
+  	if (time_machine) {
+--- 167,173 ----
+  	 * Round off to integral number of accounting records, probably
+  	 * not necessary, but it doesn't hurt.
+  	 */
+! 	size = sb.st_size - sb.st_size % sizeof(struct ACCT_STRUCT);
+  
+  	/* Print the optional time machine header. */
+  	if (time_machine) {
+***************
+*** 196,209 ****
+  	}
+  
+  	/* Check if any records to display. */
+! 	if (size < sizeof(struct acct))
+  		exit(0);
+  
+  	/*
+  	 * Seek to before the last entry in the file; use lseek(2) in case
+  	 * the file is bigger than a "long".
+  	 */
+! 	size -= sizeof(struct acct);
+  	if (lseek(fileno(fp), size, SEEK_SET) == -1)
+  		err(1, "%s", acctfile);
+  
+--- 206,219 ----
+  	}
+  
+  	/* Check if any records to display. */
+! 	if (size < sizeof(struct ACCT_STRUCT))
+  		exit(0);
+  
+  	/*
+  	 * Seek to before the last entry in the file; use lseek(2) in case
+  	 * the file is bigger than a "long".
+  	 */
+! 	size -= sizeof(struct ACCT_STRUCT);
+  	if (lseek(fileno(fp), size, SEEK_SET) == -1)
+  		err(1, "%s", acctfile);
+  
+***************
+*** 211,223 ****
+  		if (size < 0)
+  			break;
+  
+! 		if (fread(&ab, sizeof(struct acct), 1, fp) != 1)
+  			err(1, "%s", acctfile);
+  
+! 		size -= sizeof(struct acct);
+  
+  		if (size >= 0)
+! 		if (fseek(fp, 2 * -(long)sizeof(struct acct), SEEK_CUR) == -1)
+  			err(1, "%s", acctfile);
+  
+  		if (ab.ac_comm[0] == '\0') {
+--- 221,233 ----
+  		if (size < 0)
+  			break;
+  
+! 		if (fread(&ab, sizeof(struct ACCT_STRUCT), 1, fp) != 1)
+  			err(1, "%s", acctfile);
+  
+! 		size -= sizeof(struct ACCT_STRUCT);
+  
+  		if (size >= 0)
+! 		if (fseek(fp, 2 * -(long)sizeof(struct ACCT_STRUCT), SEEK_CUR) == -1)
+  			err(1, "%s", acctfile);
+  
+  		if (ab.ac_comm[0] == '\0') {
+***************
+*** 231,249 ****
+  #define UNSIG(x) ((unsigned char *)(x))
+  		if (time_machine) {
+  			for (p = ab.ac_comm; *p != 0
+! 				&& p < ab.ac_comm + fldsiz(acct, ac_comm); p++)
+  				if (isascii(*UNSIG(p)) && isprint(*UNSIG(p))
+  				&& *UNSIG(p) != '|' && *UNSIG(p) != '%')
+  					putchar(*UNSIG(p));
+  				else
+  					printf("%%%02X", *UNSIG(p));
+  			printf("|%s|%lu|%lu",
+! 				flagbits(ab.ac_flag),
+  				(unsigned long) ab.ac_uid,
+  				(unsigned long) ab.ac_gid);
+  			printf("|%s", getdev(ab.ac_tty));
+  
+! 			printf("|%.2f|%.2f|%ld|%.2f",
+  				expand(ab.ac_utime) / AC_HZ,
+  				expand(ab.ac_stime) / AC_HZ,
+  				(long) ab.ac_btime,
+--- 241,259 ----
+  #define UNSIG(x) ((unsigned char *)(x))
+  		if (time_machine) {
+  			for (p = ab.ac_comm; *p != 0
+! 				&& p < ab.ac_comm + fldsiz(ACCT_STRUCT, ac_comm); p++)
+  				if (isascii(*UNSIG(p)) && isprint(*UNSIG(p))
+  				&& *UNSIG(p) != '|' && *UNSIG(p) != '%')
+  					putchar(*UNSIG(p));
+  				else
+  					printf("%%%02X", *UNSIG(p));
+  			printf("|%s|%lu|%lu",
+! 				flagbits(ab.ACCT_FLAG),
+  				(unsigned long) ab.ac_uid,
+  				(unsigned long) ab.ac_gid);
+  			printf("|%s", getdev(ab.ac_tty));
+  
+! 			printf("|%.3f|%.3f|%ld|%.3f",
+  				expand(ab.ac_utime) / AC_HZ,
+  				expand(ab.ac_stime) / AC_HZ,
+  				(long) ab.ac_btime,
+***************
+*** 275,281 ****
+  				(unsigned long) expand(ab.ac_minflt));
+  #endif
+  #ifdef HAVE_EXIT_STATUS
+! 			printf("|%ld", ab.ac_exitcode);
+  #endif
+  #ifdef HAVE_COMP_SWAP_USAGE
+  			printf("|%lu", (unsigned long) expand(ab.ac_swaps));
+--- 285,291 ----
+  				(unsigned long) expand(ab.ac_minflt));
+  #endif
+  #ifdef HAVE_EXIT_STATUS
+! 			printf("|%ld", (long) ab.ac_exitcode);
+  #endif
+  #ifdef HAVE_COMP_SWAP_USAGE
+  			printf("|%lu", (unsigned long) expand(ab.ac_swaps));
+***************
+*** 286,322 ****
+  
+  		/* Produce the default output format. */
+  		for (p = &ab.ac_comm[0];
+! 		    p < &ab.ac_comm[fldsiz(acct, ac_comm)] && *p; ++p)
+  			if (!isprint(*p))
+  				*p = '?';
+  		(void)printf("%-*.*s %-7s %-*s %-*s ",
+! 			     fldsiz(acct, ac_comm), fldsiz(acct, ac_comm),
+  			     ab.ac_comm,
+! 			     flagbits(ab.ac_flag),
+  			     PRINT_NAMESIZE, user_from_uid(ab.ac_uid, 0),
+  			     PRINT_LINESIZE, getdev(ab.ac_tty));
+  		
+  		
+  		/* user + system time */
+  		if (time & AC_CTIME) {
+! 			(void)printf("%6.2f secs ", 
+  				     (expand(ab.ac_utime) + 
+  				      expand(ab.ac_stime))/AC_HZ);
+  		}
+  		
+  		/* usr time */
+  		if (time & AC_UTIME) {
+! 			(void)printf("%6.2f us ", expand(ab.ac_utime)/AC_HZ);
+  		}
+  		
+  		/* system time */
+  		if (time & AC_STIME) {
+! 			(void)printf("%6.2f sy ", expand(ab.ac_stime)/AC_HZ);
+  		}
+  		
+  		/* elapsed time */
+  		if (time & AC_ETIME) {
+! 			(void)printf("%8.2f es ", expand(ab.ac_etime)/AC_HZ);
+  		}
+  		
+  		/* starting time */
+--- 296,333 ----
+  
+  		/* Produce the default output format. */
+  		for (p = &ab.ac_comm[0];
+! 		    p < &ab.ac_comm[fldsiz(ACCT_STRUCT, ac_comm)] && *p; ++p)
+  			if (!isprint(*p))
+  				*p = '?';
+  		(void)printf("%-*.*s %-7s %-*s %-*s ",
+! 			     fldsiz(ACCT_STRUCT, ac_comm),
+! 			     fldsiz(ACCT_STRUCT, ac_comm),
+  			     ab.ac_comm,
+! 			     flagbits(ab.ACCT_FLAG),
+  			     PRINT_NAMESIZE, user_from_uid(ab.ac_uid, 0),
+  			     PRINT_LINESIZE, getdev(ab.ac_tty));
+  		
+  		
+  		/* user + system time */
+  		if (time & AC_CTIME) {
+! 			(void)printf("%6.3f secs ", 
+  				     (expand(ab.ac_utime) + 
+  				      expand(ab.ac_stime))/AC_HZ);
+  		}
+  		
+  		/* usr time */
+  		if (time & AC_UTIME) {
+! 			(void)printf("%6.3f us ", expand(ab.ac_utime)/AC_HZ);
+  		}
+  		
+  		/* system time */
+  		if (time & AC_STIME) {
+! 			(void)printf("%6.3f sy ", expand(ab.ac_stime)/AC_HZ);
+  		}
+  		
+  		/* elapsed time */
+  		if (time & AC_ETIME) {
+! 			(void)printf("%8.3f es ", expand(ab.ac_etime)/AC_HZ);
+  		}
+  		
+  		/* starting time */
+***************
+*** 336,341 ****
+--- 347,354 ----
+   	exit(0);
+  }
+  
++ #ifndef HAVE_ACCTV2
++ 
+  time_t
+  expand(t)
+  	u_int t;
+***************
+*** 351,356 ****
+--- 364,371 ----
+  	return (nt);
+  }
+  
++ #endif
++ 
+  char *
+  flagbits(f)
+  	register int f;
+***************
+*** 379,385 ****
+  int
+  requested(argv, acp)
+  	register char *argv[];
+! 	register struct acct *acp;
+  {
+  	register char *p;
+  
+--- 394,400 ----
+  int
+  requested(argv, acp)
+  	register char *argv[];
+! 	register struct ACCT_STRUCT *acp;
+  {
+  	register char *p;
+  
+***************
+*** 389,395 ****
+  			return (1);
+  		if ((p = getdev(acp->ac_tty)) && !strcmp(p, *argv))
+  			return (1);
+! 		if (!strncmp(acp->ac_comm, *argv, fldsiz(acct, ac_comm)))
+  			return (1);
+  	} while (*++argv);
+  	return (0);
+--- 404,410 ----
+  			return (1);
+  		if ((p = getdev(acp->ac_tty)) && !strcmp(p, *argv))
+  			return (1);
+! 		if (!strncmp(acp->ac_comm, *argv, fldsiz(ACCT_STRUCT, ac_comm)))
+  			return (1);
+  	} while (*++argv);
+  	return (0);
+diff -cr /tmp/tct-1.18/src/lastcomm/makedefs ./src/lastcomm/makedefs
+*** /tmp/tct-1.18/src/lastcomm/makedefs	Sat Aug 30 19:49:13 2003
+--- ./src/lastcomm/makedefs	Sat Aug 29 18:29:13 2009
+***************
+*** 10,15 ****
+--- 10,21 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+diff -cr /tmp/tct-1.18/src/lastcomm/sys_defs.h ./src/lastcomm/sys_defs.h
+*** /tmp/tct-1.18/src/lastcomm/sys_defs.h	Sat Aug 30 19:18:31 2003
+--- ./src/lastcomm/sys_defs.h	Sat Aug 29 18:24:42 2009
+***************
+*** 6,20 ****
+    * This software is distributed under the IBM Public License.
+    */
+  #if defined(FREEBSD2) || defined(FREEBSD3)  || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5) \
+  	|| defined(BSDI2) || defined(BSDI3) || defined(BSDI4) \
+! 	|| defined(OPENBSD2) || defined(OPENBSD3)
+  #define SUPPORTED
+  #define _PATH_ACCT	"/var/account/acct"
+  #define HAVE_COMP_BLOCK_IO_COUNT
+  #define HAVE_MEMORY_USAGE
+  #endif
+  
+  #ifdef SUNOS5_0_5
+  #define SUPPORTED
+  #define _PATH_ACCT	"/var/adm/pacct"
+--- 6,24 ----
+    * This software is distributed under the IBM Public License.
+    */
+  #if defined(FREEBSD2) || defined(FREEBSD3)  || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5) || defined(FREEBSD6)  || defined(FREEBSD7) \
+  	|| defined(BSDI2) || defined(BSDI3) || defined(BSDI4) \
+! 	|| defined(OPENBSD2) || defined(OPENBSD3) || defined(OPENBSD4)
+  #define SUPPORTED
+  #define _PATH_ACCT	"/var/account/acct"
+  #define HAVE_COMP_BLOCK_IO_COUNT
+  #define HAVE_MEMORY_USAGE
+  #endif
+  
++ #ifdef FREEBSD7
++ #define HAVE_ACCTV2
++ #endif
++ 
+  #ifdef SUNOS5_0_5
+  #define SUPPORTED
+  #define _PATH_ACCT	"/var/adm/pacct"
+diff -cr /tmp/tct-1.18/src/major_minor/makedefs ./src/major_minor/makedefs
+*** /tmp/tct-1.18/src/major_minor/makedefs	Sat Aug 30 19:59:37 2003
+--- ./src/major_minor/makedefs	Sat Aug 29 19:10:04 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/src/misc/makedefs ./src/misc/makedefs
+*** /tmp/tct-1.18/src/misc/makedefs	Sat Aug 30 19:18:41 2003
+--- ./src/misc/makedefs	Sat Aug 29 19:10:26 2009
+***************
+*** 10,19 ****
+--- 10,25 ----
+                  ;;
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+                  ;;
+     BSD/OS.3*)   DEFS="-DBSDI3"
+diff -cr /tmp/tct-1.18/src/pcat/makedefs ./src/pcat/makedefs
+*** /tmp/tct-1.18/src/pcat/makedefs	Tue Oct 14 17:07:44 2003
+--- ./src/pcat/makedefs	Sat Aug 29 19:10:42 2009
+***************
+*** 14,25 ****
+--- 14,34 ----
+    FreeBSD.5*)   DEFS="-DFREEBSD5"
+  		SYSLIBS="-lkvm"
+                  ;;
++   FreeBSD.6*)   DEFS="-DFREEBSD6"
++                 SYSLIBS="-lkvm"
++                 ;;
++   FreeBSD.7*)   DEFS="-DFREEBSD7"
++                 SYSLIBS="-lkvm"
++                 ;;
+    OpenBSD.2*)   DEFS="-DOPENBSD2"
+  		SYSLIBS="-lkvm"
+                  ;;
+    OpenBSD.3*)   DEFS="-DOPENBSD3"
+  		SYSLIBS="-lkvm"
+                  ;;
++   OpenBSD.4*)   DEFS="-DOPENBSD4"
++ 		SYSLIBS="-lkvm"
++                 ;;
+     BSD/OS.2*)   DEFS="-DBSDI2"
+  		SYSLIBS="-lkvm"
+                  ;;
+diff -cr /tmp/tct-1.18/src/pcat/pcat.c ./src/pcat/pcat.c
+*** /tmp/tct-1.18/src/pcat/pcat.c	Fri Mar 17 09:25:43 2006
+--- ./src/pcat/pcat.c	Sat Aug 29 16:19:58 2009
+***************
+*** 115,121 ****
+    * grope kernel memory instead.
+    */
+  #if defined(FREEBSD2) || defined(FREEBSD3) || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5)
+  #define SUPPORTED
+  #include <sys/param.h>
+  #include <sys/user.h>
+--- 115,121 ----
+    * grope kernel memory instead.
+    */
+  #if defined(FREEBSD2) || defined(FREEBSD3) || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5) || defined(FREEBSD6) || defined(FREEBSD7)
+  #define SUPPORTED
+  #include <sys/param.h>
+  #include <sys/user.h>
+***************
+*** 136,142 ****
+  #define PROCP_VMSPACE(p) ((p)->kp_proc.p_vmspace)
+  #endif
+  
+! #if defined(FREEBSD5)
+  #define PROCP_STATUS(p) ((p)->ki_stat)
+  #define PROCP_VMSPACE(p) ((p)->ki_vmspace)
+  #endif
+--- 136,142 ----
+  #define PROCP_VMSPACE(p) ((p)->kp_proc.p_vmspace)
+  #endif
+  
+! #if defined(FREEBSD5) || defined(FREEBSD6) || defined(FREEBSD7)
+  #define PROCP_STATUS(p) ((p)->ki_stat)
+  #define PROCP_VMSPACE(p) ((p)->ki_vmspace)
+  #endif
+***************
+*** 193,199 ****
+    * OpenBSD 2.4 ptrace() resumes a stopped process when detaching, so we must
+    * re-suspend upon detach.
+    */
+! #if defined(OPENBSD2) || defined(OPENBSD3)
+  #define SUPPORTED
+  #include <sys/param.h>
+  #include <sys/user.h>
+--- 193,199 ----
+    * OpenBSD 2.4 ptrace() resumes a stopped process when detaching, so we must
+    * re-suspend upon detach.
+    */
+! #if defined(OPENBSD2) || defined(OPENBSD3) || defined(OPENBSD4)
+  #define SUPPORTED
+  #include <sys/param.h>
+  #include <sys/user.h>
+***************
+*** 571,577 ****
+  static PROC_INFO *open_process(pid_t pid)
+  {
+  #if defined(FREEBSD2) || defined(FREEBSD3) || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5)
+      PROC_INFO *proc = (PROC_INFO *) mymalloc(sizeof(*proc));
+      MAP_INFO *mp;
+      struct kinfo_proc *procp;
+--- 571,577 ----
+  static PROC_INFO *open_process(pid_t pid)
+  {
+  #if defined(FREEBSD2) || defined(FREEBSD3) || defined(FREEBSD4) \
+! 	|| defined(FREEBSD5) || defined(FREEBSD6) || defined(FREEBSD7)
+      PROC_INFO *proc = (PROC_INFO *) mymalloc(sizeof(*proc));
+      MAP_INFO *mp;
+      struct kinfo_proc *procp;
+***************
+*** 918,924 ****
+      return (proc);
+  #endif
+  
+! #if defined(OPENBSD2) || defined(OPENBSD3)
+      PROC_INFO *proc;
+      MAP_INFO *mp;
+      struct kinfo_proc *procp;
+--- 918,924 ----
+      return (proc);
+  #endif
+  
+! #if defined(OPENBSD2) || defined(OPENBSD3) || defined(OPENBSD4)
+      PROC_INFO *proc;
+      MAP_INFO *mp;
+      struct kinfo_proc *procp;
